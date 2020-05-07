@@ -19,6 +19,14 @@ const List<String> _powers = [
 class AppComponent {
   Hero model = Hero(18, 'Dr IQ', _powers[0], 'Chuck Overstreet');
   bool submitted = false;
+  List<Item> lista = <Item>[
+    Item(id: 1),
+    Item(id: 2),
+    Item(id: 3),
+    Item(id: 4),
+    Item(id: 5),
+    Item(id: 6),
+  ];
 
   List<String> get powers => _powers;
 
@@ -27,9 +35,20 @@ class AppComponent {
   bool foque = false;
   void save() async {
     print('save()');
-    foque = true;
-    await Future.delayed(Duration(milliseconds: 200), () {
-      foque = false;
+
+    for (var i = 0; i < lista.length; i++) {
+      if (lista[i].name == null || lista[i].name == '') {
+        lista[i].setFoque();
+        break;
+      }
+    }
+
+    await Future.delayed(Duration(milliseconds: 100), () {
+      for (var i = 0; i < lista.length; i++) {
+        if (lista[i].foque) {
+          lista[i].removeFoque();      
+        }
+      }
     });
   }
 
@@ -45,6 +64,24 @@ class AppComponent {
     final validityClass = control.valid == true ? 'is-valid' : 'is-invalid';
     return {validityClass: true};
   }
+}
+
+class Item {
+  int id;
+  String name;
+  bool foque = false;
+  void setFoque() {
+    foque = true;
+    print('setFoque id $id');
+  }
+
+  void removeFoque() {
+    foque = false;
+  }
+
+  Item({this.id, this.name});
+  @override
+  String toString() => 'id: $id | name: $name | foque: $foque';
 }
 
 class Hero {
