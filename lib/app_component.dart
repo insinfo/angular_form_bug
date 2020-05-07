@@ -1,13 +1,20 @@
+import 'dart:html';
+
 import 'package:angular/angular.dart';
 import 'package:angular_forms/angular_forms.dart';
 
-const List<String> _powers = ['Really Smart', 'Super Flexible', 'Super Hot', 'Weather Changer'];
+const List<String> _powers = [
+  'Really Smart',
+  'Super Flexible',
+  'Super Hot',
+  'Weather Changer'
+];
 
 @Component(
   selector: 'my-app',
   styleUrls: ['app_component.css'],
   templateUrl: 'app_component.html',
-  directives: [coreDirectives, formDirectives],
+  directives: [coreDirectives, formDirectives, FoqueDirective],
 )
 class AppComponent {
   Hero model = Hero(18, 'Dr IQ', _powers[0], 'Chuck Overstreet');
@@ -17,15 +24,18 @@ class AppComponent {
 
   void onSubmit() => submitted = true;
 
-  void save()  {
-    //e.preventDefault();
+  bool foque = false;
+  void save() async {
     print('save()');
-    // proces();
+    foque = true;
+    await Future.delayed(Duration(milliseconds: 200), () {
+      foque = false;
+    });
   }
 
   Future proces() {
     return Future.wait([
-      Future.delayed(Duration(milliseconds: 500), () {
+      Future.delayed(Duration(milliseconds: 50), () {
         print('proces()');
       })
     ]);
@@ -43,4 +53,21 @@ class Hero {
   Hero(this.id, this.name, this.power, [this.alterEgo]);
   @override
   String toString() => '$id: $name ($alterEgo). Super power: $power';
+}
+
+@Directive(selector: '[foque]')
+class FoqueDirective {
+  Element inputElement;
+
+  FoqueDirective(this.inputElement);
+
+  @Input('foque')
+  set foque(bool val) {
+    if (val == true) {
+      Future.delayed(Duration(milliseconds: 50), () {
+        inputElement.focus();
+        print('foque');
+      });
+    }
+  }
 }
